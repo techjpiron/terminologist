@@ -1,55 +1,13 @@
 import { useState } from "react";
-import { parseISO, format } from "date-fns";
+import Nav from "../components/Nav";
 import UploadButton from "../components/UploadButton";
-
-const Nav = ({ children, className }) => (
-  <div
-    className={`mb-8 p-8 rounded-xl bg-gray-800 text-white text-opacity shadow-2xl ${className}`}
-  >
-    {children}
-  </div>
-);
-
-const ConceptGrp = ({ children }) => (
-  <div className="my-4 p-8 rounded-xl bg-gray-800 text-white text-opacity-90 shadow-2xl">
-    {children}
-  </div>
-);
-const LanguageGrp = ({ children }) => (
-  <div className="py-2 my-2 rounded">{children}</div>
-);
-
-const TermGrp = ({ children }) => <div className="mb-6">{children}</div>;
-
-const Term = ({ children }) => <p className="text-3xl font-bold">{children}</p>;
-
-const Field = ({ name, children }) => (
-  <p>
-    <span className="font-bold">{name}</span> : {children}
-  </p>
-);
-const Dump = ({ data }) => (
-  <pre className="my-4 p-2 rounded bg-gray-800 text-white">
-    {JSON.stringify(data, null, 2)}
-  </pre>
-);
-
-const toArray = (data) => {
-  if (!data) {
-    return [];
-  }
-
-  if (Array.isArray(data)) {
-    return data;
-  }
-  return Array(data);
-};
-
-const Meta = ({ value, type, date }) => (
-  <p className="opacity-75">
-    {type} by {value} on {format(parseISO(date), "dd/MM/yyyy HH:mm")}
-  </p>
-);
+import ConceptGrp from "../components/ConceptGrp";
+import LanguageGrp from "../components/LanguageGrp";
+import TermGrp from "../components/TermGrp";
+import Term from "../components/Term";
+import Field from "../components/Field";
+import Meta from "../components/Meta";
+import toArray from "../lib/toArray";
 
 const IndexPage = () => {
   const [file, setFile] = useState("");
@@ -66,8 +24,13 @@ const IndexPage = () => {
         conceptGrp.map(({ concept, languageGrp, transacGrp }) => (
           <ConceptGrp key={concept}>
             <Field name="id">{concept}</Field>
-            {toArray(transacGrp).map(({ transac, date }) => (
-              <Meta value={transac.value} type={transac._type} date={date} />
+            {toArray(transacGrp).map(({ transac: { value, _type }, date }) => (
+              <Meta
+                value={value}
+                type={_type}
+                date={date}
+                key={`${value}-${_type}`}
+              />
             ))}
             {languageGrp.map(({ language, termGrp }) => (
               <LanguageGrp key={language._type}>
