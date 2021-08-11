@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLocalStorage } from "react-use";
 import Nav from "../components/Nav";
 import UploadButton from "../components/UploadButton";
 import ConceptGrp from "../components/ConceptGrp";
@@ -10,7 +10,7 @@ import Meta from "../components/Meta";
 import toArray from "../lib/toArray";
 
 const IndexPage = () => {
-  const [file, setFile] = useState("");
+  const [file, setFile] = useLocalStorage("file");
 
   const conceptGrp = file?.mtf?.conceptGrp;
 
