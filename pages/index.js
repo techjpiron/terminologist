@@ -1,7 +1,14 @@
-import parse from "../lib/parser";
+import { useState } from "react";
 import { parseISO, format } from "date-fns";
+import UploadButton from "../components/UploadButton";
 
-const data = parse();
+const Nav = ({ children, className }) => (
+  <div
+    className={`mb-8 p-8 rounded-xl bg-gray-800 text-white text-opacity shadow-2xl ${className}`}
+  >
+    {children}
+  </div>
+);
 
 const ConceptGrp = ({ children }) => (
   <div className="my-4 p-8 rounded-xl bg-gray-800 text-white text-opacity-90 shadow-2xl">
@@ -45,37 +52,55 @@ const Meta = ({ value, type, date }) => (
 );
 
 const IndexPage = () => {
-  const conceptGrp = data.mtf.conceptGrp;
+  const [file, setFile] = useState("");
+
+  const conceptGrp = file?.mtf?.conceptGrp;
+
   return (
-    <div className="p-4 bg-gray-200">
-      {conceptGrp.map(({ concept, languageGrp, transacGrp }) => (
-        <ConceptGrp>
-          <Field name="id">{concept}</Field>
-          {toArray(transacGrp).map(({ transac, date }) => (
-            <Meta value={transac.value} type={transac._type} date={date} />
-          ))}
-          {languageGrp.map(({ language, termGrp }) => (
-            <LanguageGrp>
-              <Field name="Language">{language._type}</Field>
-              {toArray(termGrp).map(({ term, transacGrp, descripGrp }) => (
-                <TermGrp>
-                  <Term>{term}</Term>
-                  {toArray(descripGrp).map(({ descrip: { value, _type } }) => (
-                    <Field name={_type}>{value}</Field>
-                  ))}
-                  {toArray(transacGrp).map(({ transac, date }) => (
-                    <Meta
-                      value={transac.value}
-                      type={transac._type}
-                      date={date}
-                    />
-                  ))}
-                </TermGrp>
-              ))}
-            </LanguageGrp>
-          ))}
-        </ConceptGrp>
-      ))}
+    <div className="p-4 bg-gray-200 min-h-screen">
+      <Nav className="w-full flex justify-between items-center bg-gray-500">
+        <h1 className="text-3xl">Terminologist</h1>
+        <UploadButton setFile={setFile} />
+      </Nav>
+      {conceptGrp ? (
+        conceptGrp.map(({ concept, languageGrp, transacGrp }) => (
+          <ConceptGrp key={concept}>
+            <Field name="id">{concept}</Field>
+            {toArray(transacGrp).map(({ transac, date }) => (
+              <Meta value={transac.value} type={transac._type} date={date} />
+            ))}
+            {languageGrp.map(({ language, termGrp }) => (
+              <LanguageGrp key={language._type}>
+                <Field name="Language">{language._type}</Field>
+                {toArray(termGrp).map(({ term, transacGrp, descripGrp }) => (
+                  <TermGrp key={term}>
+                    <Term>{term}</Term>
+                    {toArray(descripGrp).map(
+                      ({ descrip: { value, _type } }) => (
+                        <Field name={_type} key={`${value}-${_type}`}>
+                          {value}
+                        </Field>
+                      )
+                    )}
+                    {toArray(transacGrp).map(
+                      ({ transac: { value, _type }, date }) => (
+                        <Meta
+                          value={value}
+                          type={_type}
+                          date={date}
+                          key={`${value}-${_type}`}
+                        />
+                      )
+                    )}
+                  </TermGrp>
+                ))}
+              </LanguageGrp>
+            ))}
+          </ConceptGrp>
+        ))
+      ) : (
+        <p>Upload a file</p>
+      )}
     </div>
   );
 };
