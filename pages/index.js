@@ -46,8 +46,8 @@ const IndexPage = () => {
   };
 
   return (
-    <div className="p-4 bg-gray-200 min-h-screen">
-      <Nav className="w-full flex justify-between items-center bg-gray-500">
+    <div className="p-4 bg-gray-200 min-h-screen grid sm:grid-cols-2 gap-4">
+      <Nav className="sm:col-span-2 w-full flex justify-between items-center bg-gray-500">
         <h1 className="text-3xl">Terminologist</h1>
         <UploadButton setFile={setData} />
       </Nav>

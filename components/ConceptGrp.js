@@ -13,7 +13,7 @@ const ConceptGrp = ({ children }) => (
       x: 0
     }}
     exit={{ scale: 0, opacity: 0, x: 100 }}
-    className="relative my-4 pt-16 pb-8 px-8 rounded-xl bg-gray-800 text-white text-opacity-90 shadow-2xl"
+    className="relative pt-16 pb-8 px-8 rounded-xl bg-gray-800 text-white text-opacity-90 shadow-2xl"
     layout
   >
     {children}
