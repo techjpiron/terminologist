@@ -30,8 +30,7 @@ const DeleteButton = ({ remove }) => {
   );
 };
 
-const IndexPage = () => {
-  const [data, setData] = useLocalStorage("data");
+const IndexPage = ({ data, setData }) => {
   const [showMeta, setShowMeta] = useLocalStorage("show-meta", false);
   const conceptGrp = data?.mtf?.conceptGrp;
 
@@ -46,11 +45,7 @@ const IndexPage = () => {
   };
 
   return (
-    <div className="p-4 bg-gray-200 min-h-screen grid sm:grid-cols-2 gap-4">
-      <Nav className="sm:col-span-2 w-full flex justify-between items-center bg-gray-500">
-        <h1 className="text-3xl">Terminologist</h1>
-        <UploadButton setFile={setData} />
-      </Nav>
+    <>
       <AnimatePresence>
         {conceptGrp ? (
           conceptGrp.map(({ concept: id, languageGrp, transacGrp }) => (
@@ -102,7 +97,7 @@ const IndexPage = () => {
           <p>Upload a file</p>
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 };
 
