@@ -1,4 +1,4 @@
-const Nav = ({ children, className }) => (
+const Navbar = ({ children, className }) => (
   <div
     className={`mb-8 p-8 rounded-xl bg-gray-800 text-white text-opacity shadow-2xl ${className}`}
   >
@@ -6,4 +6,4 @@ const Nav = ({ children, className }) => (
   </div>
 );
 
-export default Nav;
+export default Navbar;

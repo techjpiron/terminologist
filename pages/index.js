@@ -2,6 +2,8 @@ import { useLocalStorage } from "react-use";
 
 import produce from "immer";
 
+import { AnimatePresence } from "framer-motion";
+
 import Nav from "../components/Nav";
 import UploadButton from "../components/UploadButton";
 import ConceptGrp from "../components/ConceptGrp";
@@ -30,6 +32,7 @@ const DeleteButton = ({ remove }) => {
 
 const IndexPage = () => {
   const [data, setData] = useLocalStorage("data");
+  const [showMeta, setShowMeta] = useLocalStorage("show-meta", false);
   const conceptGrp = data?.mtf?.conceptGrp;
 
   const remove = (id) => () => {
@@ -48,51 +51,57 @@ const IndexPage = () => {
         <h1 className="text-3xl">Terminologist</h1>
         <UploadButton setFile={setData} />
       </Nav>
-      {conceptGrp ? (
-        conceptGrp.map(({ concept: id, languageGrp, transacGrp }) => (
-          <ConceptGrp key={id}>
-            <DeleteButton remove={remove(id)} />
-            <Field name="id">{id}</Field>
-            {toArray(transacGrp).map(({ transac: { value, _type }, date }) => (
-              <Meta
-                value={value}
-                type={_type}
-                date={date}
-                key={`${id}${value}${_type}`}
-              />
-            ))}
-            {languageGrp.map(({ language, termGrp }) => (
-              <LanguageGrp key={`${id}${language._type}`}>
-                <Field name="Language">{language._type}</Field>
-                {toArray(termGrp).map(({ term, transacGrp, descripGrp }) => (
-                  <TermGrp key={term}>
-                    <Term>{term}</Term>
-                    {toArray(descripGrp).map(
-                      ({ descrip: { value, _type } }) => (
-                        <Field name={_type} key={`${value}-${_type}`}>
-                          {value}
-                        </Field>
-                      )
-                    )}
-                    {toArray(transacGrp).map(
-                      ({ transac: { value, _type }, date }) => (
-                        <Meta
-                          value={value}
-                          type={_type}
-                          date={date}
-                          key={`${id}${value}${_type}`}
-                        />
-                      )
-                    )}
-                  </TermGrp>
+      <AnimatePresence>
+        {conceptGrp ? (
+          conceptGrp.map(({ concept: id, languageGrp, transacGrp }) => (
+            <ConceptGrp key={id}>
+              <DeleteButton remove={remove(id)} />
+              <Field name="id">{id}</Field>
+              {showMeta &&
+                toArray(
+                  transacGrp
+                ).map(({ transac: { value, _type }, date }) => (
+                  <Meta
+                    value={value}
+                    type={_type}
+                    date={date}
+                    key={`${id}${value}${_type}`}
+                  />
                 ))}
-              </LanguageGrp>
-            ))}
-          </ConceptGrp>
-        ))
-      ) : (
-        <p>Upload a file</p>
-      )}
+              {languageGrp.map(({ language: { _type }, termGrp }) => (
+                <LanguageGrp key={`${id}${_type}`}>
+                  <Field name="Language">{_type}</Field>
+                  {toArray(termGrp).map(({ term, transacGrp, descripGrp }) => (
+                    <TermGrp key={term}>
+                      <Term>{term}</Term>
+                      {toArray(descripGrp).map(
+                        ({ descrip: { value, _type } }) => (
+                          <Field name={_type} key={`${value}${_type}`}>
+                            {value}
+                          </Field>
+                        )
+                      )}
+                      {showMeta &&
+                        toArray(
+                          transacGrp
+                        ).map(({ transac: { value, _type }, date }) => (
+                          <Meta
+                            value={value}
+                            type={_type}
+                            date={date}
+                            key={`${id}${value}${_type}`}
+                          />
+                        ))}
+                    </TermGrp>
+                  ))}
+                </LanguageGrp>
+              ))}
+            </ConceptGrp>
+          ))
+        ) : (
+          <p>Upload a file</p>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
