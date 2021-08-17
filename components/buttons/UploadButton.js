@@ -17,7 +17,7 @@ const UploadButton = () => {
   const workerRef = useRef();
   useEffect(() => {
     workerRef.current = new Worker(
-      new URL("../../lib/xml/worker.js", import.meta.url)
+      new URL("../../lib/xml/toJs.worker.js", import.meta.url)
     );
     workerRef.current.onmessage = (event) => {
       dispatch(update(event.data));
